@@ -11,9 +11,11 @@ class TodosContainer extends Component {
       todos: []
     }
   }
+
   componentDidMount(){
     this.fetchData()
   }
+
   fetchData(){
     TodoModel.all().then( (res) => {
       this.setState ({
@@ -21,19 +23,31 @@ class TodosContainer extends Component {
       })
     })
   }
-createTodo(newBody) {
-  //a new todos variable
-  let newTodo = {
-    body: newBody,
-    completed: false
+
+  createTodo(newBody) {
+    //a new todos variable
+    let newTodo = {
+      body: newBody,
+      completed: false
+    }
+    TodoModel.create(newTodo).then((res) => {
+      console.log('created todo', res)
+      let todos = this.state.todos
+      todos.push(res)
+      this.setState({todos})
+    })
   }
-  TodoModel.create(newTodo).then((res) => {
-    console.log('created todo', res)
-    let todos = this.state.todos
-    todos.push(res)
-    this.setState({todos})
-  })
-}
+
+//DELETE
+  DeleteTodo(todo){
+    console.log('Deleting Todo', todo)
+    TodoModel.delete(todo).then((res) => {
+      let todos = this.state.todos.filter(function(todo) {
+        return todo._id !== res._id
+      })
+      this.setState({todos})
+    })
+  }
 
   render(){
     return (
